@@ -7,17 +7,20 @@ server {
     listen       80;
     server_name  expbackend.luen.online;
 
-    location / {
-        proxy_pass            ${BACK_PROXY_PASS};
-        proxy_http_version    1.1;
-        proxy_set_header      Host "$host";
-        proxy_set_header      X-Real-IP "$remote_addr";
-        proxy_set_header      X-Forwarded-For "$proxy_add_x_forwarded_for";
-        proxy_set_header      X-Forwarded-Proto "$scheme";
-        proxy_set_header      Upgrade "$http_upgrade";
-        proxy_set_header      Connection $connection_upgrade;
-        proxy_cache_bypass    $http_upgrade;
-    }
+
+     location / {
+    #add_header 'Access-Control-Allow-Origin' 'https://testnet.rapidrpc.com';
+    add_header 'Access-Control-Allow-Methods' 'GET, POST, OPTIONS';
+    add_header 'Access-Control-Allow-Headers' 'DNT,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range';
+    add_header 'Access-Control-Expose-Headers' 'Content-Length,Content-Range';
+    proxy_pass ${BACK_PROXY_PASS};
+    proxy_http_version 1.1;
+    proxy_set_header Upgrade $http_upgrade;
+    proxy_set_header Connection 'upgrade';
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_cache_bypass $http_upgrade;
+     }
 }
 
 server {
@@ -26,6 +29,8 @@ server {
 
     location / {
         proxy_pass            ${FRONT_PROXY_PASS};
+        add_header 'Access-Control-Allow-Origin' 'testexp.luen.online' always;
+
         proxy_http_version    1.1;
         proxy_set_header      Host "$host";
         proxy_set_header      X-Real-IP "$remote_addr";
@@ -42,7 +47,7 @@ server {
     proxy_http_version 1.1;
     proxy_hide_header Access-Control-Allow-Origin;
     proxy_hide_header Access-Control-Allow-Methods;
-    add_header 'Access-Control-Allow-Origin' 'http://stats.luen.online' always;
+    add_header 'Access-Control-Allow-Origin' 'testexp.luen.online' always;
     add_header 'Access-Control-Allow-Credentials' 'true' always;
     add_header 'Access-Control-Allow-Methods' 'PUT, GET, POST, OPTIONS, DELETE, PATCH' always;
 
@@ -65,7 +70,7 @@ server {
     proxy_http_version 1.1;
     proxy_hide_header Access-Control-Allow-Origin;
     proxy_hide_header Access-Control-Allow-Methods;
-    add_header 'Access-Control-Allow-Origin' 'http://visualizer.luen.online' always;
+    add_header 'Access-Control-Allow-Origin' 'testexp.luen.online' always;
     add_header 'Access-Control-Allow-Credentials' 'true' always;
     add_header 'Access-Control-Allow-Methods' 'PUT, GET, POST, OPTIONS, DELETE, PATCH' always;
     add_header 'Access-Control-Allow-Headers' 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-csrf-token' always;
@@ -85,7 +90,7 @@ server {
         proxy_set_header      Connection $connection_upgrade;
         proxy_cache_bypass    $http_upgrade;
         if ($request_method = 'OPTIONS') {
-            add_header 'Access-Control-Allow-Origin' 'http://visualizer.luen.online' always;
+            add_header 'Access-Control-Allow-Origin' 'testexp.luen.online' always;
             add_header 'Access-Control-Allow-Credentials' 'true' always;
             add_header 'Access-Control-Allow-Methods' 'PUT, GET, POST, OPTIONS, DELETE, PATCH' always;
             add_header 'Access-Control-Allow-Headers' 'DNT,Keep-Alive,User-Agent,X-Requested-With,If-Modified-Since,Cache-Control,Content-Type,Range,Authorization,x-csrf-token' always;
